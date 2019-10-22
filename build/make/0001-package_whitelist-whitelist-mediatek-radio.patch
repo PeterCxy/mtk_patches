@@ -1,0 +1,24 @@
+From 35a9422525bbbcc488cc4d8824eb56419bc0a05a Mon Sep 17 00:00:00 2001
+From: Peter Cai <peter@typeblog.net>
+Date: Tue, 22 Oct 2019 08:48:07 +0800
+Subject: [PATCH] package_whitelist: whitelist mediatek radio
+
+Change-Id: I0bd5ccac051db91e1b01c904469cf3047ecbc180
+---
+ core/tasks/check_boot_jars/package_whitelist.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/core/tasks/check_boot_jars/package_whitelist.txt b/core/tasks/check_boot_jars/package_whitelist.txt
+index 7e2e56c4c..d843d3262 100644
+--- a/core/tasks/check_boot_jars/package_whitelist.txt
++++ b/core/tasks/check_boot_jars/package_whitelist.txt
+@@ -247,3 +247,6 @@ org\.chromium\.arc\..*
+ # LineageOS
+ lineageos\.platform
+ org\.lineageos\.platform\.internal
++
++# Stupid vendor radio extensions
++vendor\.mediatek\.hardware\.radio\.V2_0
+-- 
+2.23.0
+

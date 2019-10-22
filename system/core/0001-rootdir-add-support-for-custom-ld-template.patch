@@ -1,0 +1,27 @@
+From 86ebf088b8594979f5389c54ea51eda7cc99ef3b Mon Sep 17 00:00:00 2001
+From: Peter Cai <peter@typeblog.net>
+Date: Sun, 20 Oct 2019 20:50:09 +0800
+Subject: [PATCH] rootdir: add support for custom ld template
+
+Change-Id: I69e339cd0b9552f7e03bb3425426639a6b856b00
+---
+ rootdir/Android.mk | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/rootdir/Android.mk b/rootdir/Android.mk
+index 7ff1588b2..26c8e6a65 100644
+--- a/rootdir/Android.mk
++++ b/rootdir/Android.mk
+@@ -297,6 +297,9 @@ LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+ LOCAL_MODULE_STEM := $$(LOCAL_MODULE)
+ include $(BUILD_SYSTEM)/base_rules.mk
+ ld_config_template := $(LOCAL_PATH)/etc/ld.config.txt
++ifdef TARGET_CUSTOM_LDCONFIG_TEMPLATE_$(1)
++ld_config_template := $(TARGET_CUSTOM_LDCONFIG_TEMPLATE_$(1))
++endif
+ check_backward_compatibility := true
+ vndk_version := $(1)
+ lib_list_from_prebuilts := true
+-- 
+2.23.0
+

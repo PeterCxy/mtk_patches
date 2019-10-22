@@ -1,0 +1,27 @@
+From d215d036ce2a8a11f3328c300366737424b4cd32 Mon Sep 17 00:00:00 2001
+From: Peter Cai <peter@typeblog.net>
+Date: Tue, 22 Oct 2019 20:55:42 +0800
+Subject: [PATCH] hwui: add dependency on libbase
+
+* From skia
+
+Change-Id: I91ebb1d7026c9504d0de31160f1da3c2ad3a73ce
+---
+ libs/hwui/Android.bp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libs/hwui/Android.bp b/libs/hwui/Android.bp
+index ebba4cb79df..3f895353c50 100644
+--- a/libs/hwui/Android.bp
++++ b/libs/hwui/Android.bp
+@@ -52,6 +52,7 @@ cc_defaults {
+ cc_defaults {
+     name: "hwui_static_deps",
+     shared_libs: [
++        "libbase",
+         "liblog",
+         "libcutils",
+         "libstatslog",
+-- 
+2.23.0
+
