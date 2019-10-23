@@ -1,0 +1,35 @@
+From 2c22384a123937e587f33470936f37f779974944 Mon Sep 17 00:00:00 2001
+From: Peter Cai <peter@typeblog.net>
+Date: Wed, 23 Oct 2019 13:02:26 +0800
+Subject: [PATCH 2/2] init: selinux: support overlaying vendor sepolicy in
+ system
+
+* Needed for some MTK 8.1 vendor devices
+
+Change-Id: Id3a60fce64dbe3aa5f1f1cf26292844be244338d
+---
+ init/selinux.cpp | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/init/selinux.cpp b/init/selinux.cpp
+index 86238b430..4f2fa1486 100644
+--- a/init/selinux.cpp
++++ b/init/selinux.cpp
+@@ -355,6 +355,14 @@ bool LoadSplitPolicy() {
+         return false;
+     }
+ 
++    // Allow overriding vendor policy from system
++    std::string vendor_policy_overlay_file("/system/etc/selinux/sepolicy_overlay/vendor.cil");
++
++    if (access(vendor_policy_overlay_file.c_str(), F_OK) != -1) {
++        LOG(INFO) << "Overriding vendor sepolicy with " << vendor_policy_overlay_file;
++        vendor_policy_cil_file = vendor_policy_overlay_file;
++    }
++
+     // odm_sepolicy.cil is default but optional.
+     std::string odm_policy_cil_file("/odm/etc/selinux/odm_sepolicy.cil");
+     if (access(odm_policy_cil_file.c_str(), F_OK) == -1) {
+-- 
+2.23.0
+

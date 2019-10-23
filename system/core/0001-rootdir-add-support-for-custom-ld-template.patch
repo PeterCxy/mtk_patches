@@ -1,7 +1,7 @@
 From 86ebf088b8594979f5389c54ea51eda7cc99ef3b Mon Sep 17 00:00:00 2001
 From: Peter Cai <peter@typeblog.net>
 Date: Sun, 20 Oct 2019 20:50:09 +0800
-Subject: [PATCH] rootdir: add support for custom ld template
+Subject: [PATCH 1/2] rootdir: add support for custom ld template
 
 Change-Id: I69e339cd0b9552f7e03bb3425426639a6b856b00
 ---
