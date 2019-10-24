@@ -1,0 +1,90 @@
+From 945a94bb107a6d0399ba12116eb57227879b77b1 Mon Sep 17 00:00:00 2001
+From: gudenau <gudenau>
+Date: Tue, 25 Sep 2018 09:44:26 +0200
+Subject: [PATCH] core: Add support for MicroG
+
+-fake signatures, enabled per app by dynamic permission
+
+Change-Id: I84fc7e5c606f4b57012d948a4cc6cb521db6b03e
+---
+ core/res/AndroidManifest.xml                  |  7 ++++++
+ core/res/res/values/strings.xml               |  5 ++++
+ .../server/pm/PackageManagerService.java      | 23 +++++++++++++++++--
+ 3 files changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/core/res/AndroidManifest.xml b/core/res/AndroidManifest.xml
+index 0c3b7a137b9..7d099cbe077 100644
+--- a/core/res/AndroidManifest.xml
++++ b/core/res/AndroidManifest.xml
+@@ -2637,6 +2637,13 @@
+         android:description="@string/permdesc_getPackageSize"
+         android:protectionLevel="normal" />
+ 
++    <!-- @hide Allows an application to change the package signature as
++	 seen by applications -->
++    <permission android:name="android.permission.FAKE_PACKAGE_SIGNATURE"
++        android:protectionLevel="dangerous"
++        android:label="@string/permlab_fakePackageSignature"
++        android:description="@string/permdesc_fakePackageSignature" />
++
+     <!-- @deprecated No longer useful, see
+          {@link android.content.pm.PackageManager#addPackageToPreferred}
+          for details. -->
+diff --git a/core/res/res/values/strings.xml b/core/res/res/values/strings.xml
+index 152b131af8f..82fdae768eb 100644
+--- a/core/res/res/values/strings.xml
++++ b/core/res/res/values/strings.xml
+@@ -5392,4 +5392,9 @@
+     <!-- ChooserActivity - Alphabetically sorted apps list label. [CHAR LIMIT=NONE] -->
+     <string name="chooser_all_apps_button_label">Apps list</string>
+ 
++    <!-- MicroG -->
++    <string name="permlab_fakePackageSignature">Spoof package signature</string>
++    <!-- Description of an application permission, listed so the user can choose whether
++         they want to allow the application to do this. -->
++    <string name="permdesc_fakePackageSignature">Allows the app to pretend to be a different app. Malicious applications might be able to use this to access private application data. Legitimate uses include an emulator pretending to be what it emulates. Grant this permission with caution only!</string>
+ </resources>
+diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
+index 5a62f7d6006..9fc2d7890ec 100644
+--- a/services/core/java/com/android/server/pm/PackageManagerService.java
++++ b/services/core/java/com/android/server/pm/PackageManagerService.java
+@@ -4105,8 +4105,9 @@ public class PackageManagerService extends IPackageManager.Stub
+             final Set<String> permissions = ArrayUtils.isEmpty(p.requestedPermissions)
+                     ? Collections.emptySet() : permissionsState.getPermissions(userId);
+ 
+-            PackageInfo packageInfo = PackageParser.generatePackageInfo(p, gids, flags,
+-                    ps.firstInstallTime, ps.lastUpdateTime, permissions, state, userId);
++            PackageInfo packageInfo = mayFakeSignature(p, PackageParser.generatePackageInfo(p, gids, flags,
++                ps.firstInstallTime, ps.lastUpdateTime, permissions, state, userId),
++                permissions);
+ 
+             if (packageInfo == null) {
+                 return null;
+@@ -4142,6 +4143,24 @@ public class PackageManagerService extends IPackageManager.Stub
+         }
+     }
+ 
++    private PackageInfo mayFakeSignature(PackageParser.Package p, PackageInfo pi,
++            Set<String> permissions) {
++        try {
++            if (permissions.contains("android.permission.FAKE_PACKAGE_SIGNATURE")
++                    && p.applicationInfo.targetSdkVersion > Build.VERSION_CODES.LOLLIPOP_MR1
++                    && p.mAppMetaData != null) {
++                String sig = p.mAppMetaData.getString("fake-signature");
++                if (sig != null) {
++                    pi.signatures = new Signature[] {new Signature(sig)};
++                }
++            }
++        } catch (Throwable t) {
++            // We should never die because of any failures, this is system code!
++            Log.w("PackageManagerService.FAKE_PACKAGE_SIGNATURE", t);
++        }
++        return pi;
++    }
++
+     @Override
+     public void checkPackageStartable(String packageName, int userId) {
+         final int callingUid = Binder.getCallingUid();
+-- 
+2.23.0
+
