@@ -1,0 +1,251 @@
+package vendor.mediatek.hardware.radio@3.0;
+
+import android.hardware.radio@1.0::types;
+import android.hardware.radio@1.2::types;
+
+enum MtkApnTypes : android.hardware.radio@1.0::ApnTypes {
+    WAP = 1 << 10,
+    XCAP = 1 << 11,
+    RCS = 1 << 12,
+    BIP = 1 << 13,
+    VSIM = 1 << 14,
+    MTKALL = ALL | WAP | XCAP | RCS | BIP | VSIM,
+};
+
+struct IncomingCallNotification {
+    string callId;
+    string number;
+    string type;
+    string callMode;
+    string seqNo;
+    string redirectNumber;
+    string toNumber;
+};
+
+struct CfuStatusNotification {
+    int32_t status;
+    int32_t lineId;
+};
+
+struct CallForwardInfoEx {
+    CallForwardInfoStatus status;
+    int32_t reason;
+    int32_t serviceClass;
+    int32_t toa;
+    string number;
+    int32_t timeSeconds;
+    string timeSlotBegin;
+    string timeSlotEnd;
+};
+
+struct PhbEntryStructure {
+    int32_t type;
+    int32_t index;
+    string number;
+    int32_t ton;
+    string alphaId;
+};
+
+struct PhbEntryExt {
+    int32_t index;
+    string number;
+    int32_t type;
+    string text;
+    int32_t hidden;
+    string group;
+    string adnumber;
+    int32_t adtype;
+    string secondtext;
+    string email;
+};
+
+struct PhbMemStorageResponse {
+    string storage;
+    int32_t used;
+    int32_t total;
+};
+
+struct CipherNotification {
+    string simCipherStatus;
+    string sessionStatus;
+    string csStatus;
+    string psStatus;
+};
+
+struct CrssNotification {
+    int32_t code;
+    int32_t type;
+    string number;
+    string alphaid;
+    int32_t cli_validity;
+};
+
+struct SimAuthStructure {
+    int32_t sessionId;
+    int32_t mode;
+    string param1;
+    string param2;
+    int32_t tag;
+};
+
+struct VsimMessage {
+    uint32_t transactionId;
+    uint32_t messageId;
+    uint32_t slotId;
+    uint32_t length;
+};
+
+struct VsimEvent {
+    uint32_t transactionId;
+    uint32_t eventId;
+    uint32_t simType;
+};
+
+struct VsimOperationEvent {
+    uint32_t transactionId;
+    uint32_t eventId;
+    int32_t result;
+    uint32_t dataLength;
+    string data;
+};
+
+struct ConferenceDial {
+    android.hardware.radio@1.0::Clir clir;
+    bool isVideoCall;
+    vec<string> dialNumbers;
+};
+
+struct SmsParams {
+    int32_t format;
+    int32_t vp;
+    int32_t pid;
+    int32_t dcs;
+};
+
+struct EtwsNotification {
+    int32_t warningType;
+    int32_t messageId;
+    int32_t serialNumber;
+    string plmnId;
+    string securityInfo;
+} ;
+
+struct SmsMemStatus {
+    int32_t used;
+    int32_t total;
+};
+
+struct OperatorInfoWithAct {
+    OperatorInfo base;
+    string lac;
+    string act;
+};
+
+struct Qos {
+    int32_t qci;
+    int32_t dlGbr;
+    int32_t ulGbr;
+    int32_t dlMbr;
+    int32_t ulMbr;
+};
+
+struct PktFilter {
+    int32_t id;
+    int32_t precedence;
+    int32_t direction;
+    int32_t networkPfIdentifier;
+    int32_t bitmap;
+    string address;
+    string mask;
+    int32_t protocolNextHeader;
+    int32_t localPortLow;
+    int32_t localPortHigh;
+    int32_t remotePortLow;
+    int32_t remotePortHigh;
+    int32_t spi;
+    int32_t tos;
+    int32_t tosMask;
+    int32_t flowLabel;
+};
+
+struct TftParameter {
+    int32_t linkedPfNumber;
+    vec<int32_t> linkedPfList;
+};
+
+struct Tft {
+    int32_t operation;
+    int32_t pfNumber;
+    vec<PktFilter> pfList;
+    TftParameter tftParameter;
+};
+
+struct DedicateDataCall {
+    int32_t ddcId;
+    int32_t interfaceId;
+    int32_t primaryCid;
+    int32_t cid;
+    int32_t active;
+    int32_t signalingFlag;
+    int32_t bearerId;
+    int32_t failCause;
+    int32_t hasQos;
+    Qos     qos;
+    int32_t hasTft;
+    Tft     tft;
+    int32_t hasPcscf;
+    string  pcscf;
+};
+
+struct PcoDataAttachedInfo {
+    int32_t cid;
+    string apnName;
+    string bearerProto;
+    int32_t pcoId;
+    vec<uint8_t> contents;
+};
+
+struct MtkSetupDataCallResult {
+    android.hardware.radio@1.0::SetupDataCallResult dcr;
+    int32_t rat;
+};
+
+struct ImsConfParticipant {
+    string user_addr;
+    string end_point;
+    string entity;
+    string display_text;
+    string status;
+};
+
+struct Dialog {
+    int32_t dialogId;
+    int32_t callState;
+    int32_t callType;
+    bool isPullable;
+    bool isCallHeld;
+    string address;
+};
+
+struct SignalStrengthWithWcdmaEcio {
+    uint32_t gsm_signalStrength;
+    uint32_t gsm_bitErrorRate;
+    uint32_t wcdma_rscp;
+    uint32_t wcdma_ecio;
+    uint32_t cdma_dbm;
+    uint32_t cdma_ecio;
+    uint32_t evdo_dbm;
+    uint32_t evdo_ecio;
+    uint32_t evdo_signalNoiseRatio;
+    uint32_t lte_signalStrength;
+    uint32_t lte_rsrp;
+    uint32_t lte_rsrq;
+    int32_t lte_rssnr;
+    uint32_t lte_cqi;
+    uint32_t tdscdma_rscp;
+};
+
+enum DsbpState : int32_t {
+    DSBP_ENHANCEMENT_END,
+    DSBP_ENHANCEMENT_START
+};
